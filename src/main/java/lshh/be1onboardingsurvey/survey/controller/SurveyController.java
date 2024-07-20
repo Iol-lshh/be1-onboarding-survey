@@ -46,12 +46,16 @@ public class SurveyController {
         return Response.of(result);
     }
 
-
     @GetMapping("all")
     public List<SurveyView> all(){
         return service.findAll();
     }
 
+    @PostMapping("/{survey}/response")
+    public Response addResponse(@RequestBody AddSurveyResponseCommand command) {
+        Result result = service.addResponse(command);
+        return Response.of(result);
+    }
 
 
 }

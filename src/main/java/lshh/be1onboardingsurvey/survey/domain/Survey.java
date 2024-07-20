@@ -27,6 +27,9 @@ public class Survey {
     @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<SurveyItem> items;
 
+    @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<SurveyResponse> responses;
+
     public static Survey of(CreateSurveyCommand command) {
         return Survey.builder()
                 .name(command.name())
@@ -84,5 +87,9 @@ public class Survey {
         SurveyItem surveyItem = findItem(command.itemId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey item not found"));
         surveyItem.updateItemOption(command, clock);
+    }
+
+    public void addResponse(AddSurveyResponseCommand command) {
+
     }
 }

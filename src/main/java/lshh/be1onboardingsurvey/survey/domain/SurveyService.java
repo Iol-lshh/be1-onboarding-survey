@@ -67,4 +67,11 @@ public class SurveyService {
         survey.updateItem(command, clock);
         return repository.save(survey);
     }
+
+    public Result addResponse(AddSurveyResponseCommand command) {
+Survey survey = repository.findById(command.surveyId())
+                .orElseThrow(() -> new IllegalArgumentException("Survey not found"));
+        survey.addResponse(command);
+        return repository.save(survey);
+    }
 }
