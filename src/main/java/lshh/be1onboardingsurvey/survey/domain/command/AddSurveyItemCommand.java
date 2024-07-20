@@ -8,7 +8,8 @@ public record AddSurveyItemCommand(
         String name,
         String description,
         SurveyItemForm form,
-        Boolean required
+        Boolean required,
+        Long sequence
 ){
 
     public SurveyItem toEntity() {
@@ -17,6 +18,7 @@ public record AddSurveyItemCommand(
                 .description(this.description)
                 .form(this.form)
                 .required(this.required)
+                .sequence(this.sequence)
                 .build();
     }
 }
