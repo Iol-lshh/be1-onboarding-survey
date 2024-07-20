@@ -1,7 +1,7 @@
 package lshh.be1onboardingsurvey.survey.domain.command;
 
 import lshh.be1onboardingsurvey.survey.domain.SurveyItem;
-import lshh.be1onboardingsurvey.survey.domain.SurveyItemForm;
+import lshh.be1onboardingsurvey.survey.domain.SurveyItemFormType;
 
 
 public record UpdateSurveyItemCommand(
@@ -9,7 +9,7 @@ public record UpdateSurveyItemCommand(
         Long itemId,
         String name,
         String description,
-        SurveyItemForm form,
+        SurveyItemFormType form,
         Boolean required,
         Long sequence
 ){
@@ -18,7 +18,7 @@ public record UpdateSurveyItemCommand(
         return SurveyItem.builder()
                 .name(this.name)
                 .description(this.description)
-                .form(this.form)
+                .formType(this.form)
                 .required(this.required)
                 .sequence(this.sequence)
                 .build();

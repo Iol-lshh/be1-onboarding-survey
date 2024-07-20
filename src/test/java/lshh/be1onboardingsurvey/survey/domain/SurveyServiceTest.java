@@ -1,6 +1,5 @@
 package lshh.be1onboardingsurvey.survey.domain;
 
-import lshh.be1onboardingsurvey.common.lib.clock.Clock;
 import lshh.be1onboardingsurvey.survey.domain.command.AddSurveyItemCommand;
 import lshh.be1onboardingsurvey.survey.domain.command.AddSurveyItemOptionCommand;
 import lshh.be1onboardingsurvey.survey.domain.command.CreateSurveyCommand;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,7 +56,7 @@ public class SurveyServiceTest {
             SurveyView surveyView = surveyService.findByName("testAddItem_Simple").orElseThrow();
             Long surveyId = surveyView.id();
 
-            AddSurveyItemCommand command = new AddSurveyItemCommand(surveyId, "testAddItem_Simple", "description", SurveyItemForm.TEXT, true, 1L);
+            AddSurveyItemCommand command = new AddSurveyItemCommand(surveyId, "testAddItem_Simple", "description", SurveyItemFormType.TEXT, true, 1L);
 
             // Act
             Result result = surveyService.addItem(command);
@@ -85,7 +83,7 @@ public class SurveyServiceTest {
             Long surveyId = surveyView.id();
             System.out.println(surveyView);
 
-            AddSurveyItemCommand addSurveyItemCommand = new AddSurveyItemCommand(surveyId, "item_testUpdateItem_Simple", "description", SurveyItemForm.RADIO, true, 1L);
+            AddSurveyItemCommand addSurveyItemCommand = new AddSurveyItemCommand(surveyId, "item_testUpdateItem_Simple", "description", SurveyItemFormType.RADIO, true, 1L);
             Result addSurveyItemResult = surveyService.addItem(addSurveyItemCommand);
             assertEquals(Result.Status.SUCCESS, addSurveyItemResult.status());
             SurveyView surveyViewWithItem = surveyService.findByName("survey_testUpdateItem_Simple").orElseThrow();
@@ -102,7 +100,7 @@ public class SurveyServiceTest {
                     itemId,
                     "item_updated_testUpdateItem_Simple",
                     "description",
-                    SurveyItemForm.RADIO,
+                    SurveyItemFormType.RADIO,
                     true,
                     2L
             );
@@ -129,7 +127,7 @@ public class SurveyServiceTest {
             SurveyView surveyView = surveyService.findByName("testAddItemOption_Simple").orElseThrow();
             Long surveyId = surveyView.id();
 
-            AddSurveyItemCommand addSurveyItemCommand = new AddSurveyItemCommand(surveyId, "testAddItemOption_Simple", "description", SurveyItemForm.RADIO, true, 1L);
+            AddSurveyItemCommand addSurveyItemCommand = new AddSurveyItemCommand(surveyId, "testAddItemOption_Simple", "description", SurveyItemFormType.RADIO, true, 1L);
             Result addSurveyItemResult = surveyService.addItem(addSurveyItemCommand);
             assertEquals(Result.Status.SUCCESS, addSurveyItemResult.status());
             SurveyView surveyViewWithItem = surveyService.findByName("testAddItemOption_Simple").orElseThrow();

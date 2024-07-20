@@ -34,7 +34,7 @@ public class SurveyTest {
                     1L,
                     "Test Item",
                     "This is a test item",
-                    SurveyItemForm.TEXT,
+                    SurveyItemFormType.TEXT,
                     true,
                     1L
             );
@@ -56,7 +56,7 @@ public class SurveyTest {
             // Initialize Survey with single item list
             SurveyItem initialItem = SurveyItem.builder()
                     .id(1L)
-                    .form(SurveyItemForm.RADIO)
+                    .formType(SurveyItemFormType.RADIO)
                     .build();
             List<SurveyItem> itemList = new ArrayList<>();
             itemList.add(initialItem);
@@ -94,7 +94,7 @@ public class SurveyTest {
                     .id(1L)
                     .name("Latest Item")
                     .description("This is the latest item")
-                    .form(SurveyItemForm.TEXT)
+                    .formType(SurveyItemFormType.TEXT)
                     .required(true)
                     .sequence(1L)
                     .build();
@@ -112,7 +112,7 @@ public class SurveyTest {
                     1L,
                     "Updated Item",
                     "This is an updated item",
-                    SurveyItemForm.TEXT,
+                    SurveyItemFormType.TEXT,
                     true,
                     1L
             );
