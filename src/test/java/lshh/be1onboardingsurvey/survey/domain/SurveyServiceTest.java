@@ -1,5 +1,6 @@
 package lshh.be1onboardingsurvey.survey.domain;
 
+import lshh.be1onboardingsurvey.common.lib.clock.Clock;
 import lshh.be1onboardingsurvey.survey.domain.command.AddSurveyItemCommand;
 import lshh.be1onboardingsurvey.survey.domain.command.AddSurveyItemOptionCommand;
 import lshh.be1onboardingsurvey.survey.domain.command.CreateSurveyCommand;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,6 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SurveyServiceTest {
     @Autowired
     private SurveyService surveyService;
+
+    private final Clock clock = new Clock() {
+        @Override
+        public LocalDateTime now() {
+            return LocalDateTime.of(2024, 7, 20, 11, 46, 0);
+        }
+    };
 
     @Nested
     @DisplayName("Survey 생성")
