@@ -2,23 +2,15 @@ package lshh.be1onboardingsurvey.survey.domain.vo;
 
 import lshh.be1onboardingsurvey.survey.domain.SurveyItemFormType;
 
-public class SurveyResponseItemTextareaValue implements SurveyResponseItemValue<String> {
-    private final String value;
+public record SurveyResponseItemTextareaValue(
+        String value
+) implements SurveyResponseItemValue<String> {
 
-    static SurveyResponseItemValue of(String value) {
+    static SurveyResponseItemValue<String> of(String value) {
         return new SurveyResponseItemTextareaValue(value);
     }
-    public SurveyResponseItemTextareaValue(String value) {
-        this.value = value;
-    }
 
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public SurveyItemFormType getType() {
+    public SurveyItemFormType type() {
         return SurveyItemFormType.TEXTAREA;
     }
 }

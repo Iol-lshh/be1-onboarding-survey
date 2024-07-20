@@ -11,7 +11,7 @@ public interface SurveyRepository {
 
     List<SurveyView> findAllToView();
 
-    Result save(Survey survey);
+    Result<?> save(Survey survey);
 
     Optional<Survey> findById(Long id);
 

@@ -23,7 +23,7 @@ public class SurveyRepositoryImplement implements SurveyRepository {
     }
 
     @Override
-    public Result save(Survey survey) {
+    public Result<?> save(Survey survey) {
         jpaRepository.save(survey);
         return Result.success();
     }

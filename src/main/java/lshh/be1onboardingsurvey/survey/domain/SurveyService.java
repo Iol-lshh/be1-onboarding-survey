@@ -32,13 +32,13 @@ public class SurveyService {
     }
 
     @Transactional
-    public Result create(CreateSurveyCommand command) {
+    public Result<?> create(CreateSurveyCommand command) {
         Survey survey = Survey.of(command);
         return repository.save(survey);
     }
 
     @Transactional
-    public Result addItem(AddSurveyItemCommand command) {
+    public Result<?> addItem(AddSurveyItemCommand command) {
         Survey survey = repository.findById(command.surveyId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey not found"));
         survey.addItem(command);
@@ -46,7 +46,7 @@ public class SurveyService {
     }
 
     @Transactional
-    public Result addItemOption(AddSurveyItemOptionCommand command) {
+    public Result<?> addItemOption(AddSurveyItemOptionCommand command) {
         Survey survey = repository.findById(command.surveyId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey not found"));
         survey.updateItem(command);
@@ -54,7 +54,7 @@ public class SurveyService {
     }
 
     @Transactional
-    public Result updateItem(UpdateSurveyItemCommand updateSurveyItemCommand) {
+    public Result<?> updateItem(UpdateSurveyItemCommand updateSurveyItemCommand) {
         Survey survey = repository.findById(updateSurveyItemCommand.surveyId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey not found"));
         survey.updateItem(updateSurveyItemCommand, clock);
@@ -62,7 +62,7 @@ public class SurveyService {
     }
 
     @Transactional
-    public Result updateItemOption(UpdateSurveyItemOptionCommand command) {
+    public Result<?> updateItemOption(UpdateSurveyItemOptionCommand command) {
         Survey survey = repository.findById(command.surveyId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey not found"));
         survey.updateItem(command, clock);
@@ -70,7 +70,7 @@ public class SurveyService {
     }
 
     @Transactional
-    public Result addResponse(AddSurveyResponseCommand command) {
+    public Result<?> addResponse(AddSurveyResponseCommand command) {
         Survey survey = repository.findById(command.surveyId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey not found"));
         survey.addResponse(command);

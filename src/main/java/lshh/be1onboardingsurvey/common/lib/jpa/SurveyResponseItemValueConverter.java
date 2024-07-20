@@ -6,18 +6,17 @@ import lshh.be1onboardingsurvey.survey.domain.vo.SurveyResponseItemValue;
 
 import java.util.Arrays;
 
-public class SurveyResponseItemValueConverter implements AttributeConverter<SurveyResponseItemValue, String> {
+public class SurveyResponseItemValueConverter implements AttributeConverter<SurveyResponseItemValue<?>, String> {
 
         @Override
         public String convertToDatabaseColumn(SurveyResponseItemValue attribute) {
-            String args = """
-                    {0}::{1}
-                    """.formatted(attribute.getType().name(), attribute.getValue().toString());
-            return args;
+            return """
+                    %s::%s
+                    """.formatted(attribute.type().name(), attribute.value().toString());
         }
 
         @Override
-        public SurveyResponseItemValue convertToEntityAttribute(String dbData) {
+        public SurveyResponseItemValue<?> convertToEntityAttribute(String dbData) {
             SurveyItemFormType type = SurveyItemFormType.valueOf(dbData.split("::")[0]);
             String valueYet = dbData.split("::")[1];
             Object value = switch (type) {
