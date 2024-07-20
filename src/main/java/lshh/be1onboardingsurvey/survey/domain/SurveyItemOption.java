@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+
 @Entity
 public class SurveyItemOption {
     @Id
@@ -22,5 +23,4 @@ public class SurveyItemOption {
     @Setter
     @ManyToOne
     SurveyItem surveyItem;
-
 }

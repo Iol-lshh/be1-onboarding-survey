@@ -37,6 +37,7 @@ public class SurveyController {
     }
 
 
+
     @GetMapping("all")
     public List<SurveyView> all(){
         return service.findAll();

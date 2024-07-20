@@ -27,7 +27,7 @@ public class SurveyItem {
     Long sequence;
 
     LocalDateTime overridden;
-
+  
     @Setter
     @ManyToOne
     Survey survey;

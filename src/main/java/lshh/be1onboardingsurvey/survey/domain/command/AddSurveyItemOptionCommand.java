@@ -16,5 +16,4 @@ public record AddSurveyItemOptionCommand(
                 .sequence(this.sequence)
                 .build();
     }
-
 }
