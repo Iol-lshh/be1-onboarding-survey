@@ -24,13 +24,6 @@ public class SurveyServiceTest {
     @Autowired
     private SurveyService surveyService;
 
-    private final Clock clock = new Clock() {
-        @Override
-        public LocalDateTime now() {
-            return LocalDateTime.of(2024, 7, 20, 11, 46, 0);
-        }
-    };
-
     @Nested
     @DisplayName("Survey 생성")
     class CreateSurveyTest{
