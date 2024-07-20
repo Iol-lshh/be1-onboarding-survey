@@ -1,7 +1,14 @@
 package lshh.be1onboardingsurvey.survey.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+import java.time.LocalDateTime;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 public class SurveyItemOption {
     @Id
@@ -10,7 +17,10 @@ public class SurveyItemOption {
     String name;
     String description;
     Long sequence;
+    LocalDateTime overridden;
 
+    @Setter
     @ManyToOne
     SurveyItem surveyItem;
+
 }
