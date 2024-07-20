@@ -20,5 +20,4 @@ public class SurveyResponseItem {
     @ManyToOne
     SurveyResponse surveyResponse;
 
-
 }

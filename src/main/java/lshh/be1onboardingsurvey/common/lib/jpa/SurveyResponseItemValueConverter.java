@@ -23,7 +23,10 @@ public class SurveyResponseItemValueConverter implements AttributeConverter<Surv
             Object value = switch (type) {
                 case TEXT, TEXTAREA -> valueYet;
                 case RADIO -> Long.valueOf(valueYet);
-                case CHECKBOX -> Arrays.stream(valueYet.split(",")).map(Long::valueOf).toArray(Long[]::new);
+                case CHECKBOX -> {
+                    String valueStr = valueYet.substring(1, valueYet.length() - 1); // remove '[' and ']'
+                    yield  Arrays.stream(valueStr.split(",")).map(Long::valueOf).toArray(Long[]::new);
+                }
             };
             return SurveyResponseItemValue.of(type, value);
         }

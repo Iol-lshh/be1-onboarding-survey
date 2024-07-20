@@ -61,6 +61,7 @@ public class SurveyService {
         return repository.save(survey);
     }
 
+    @Transactional
     public Result updateItemOption(UpdateSurveyItemOptionCommand command) {
         Survey survey = repository.findById(command.surveyId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey not found"));
@@ -68,8 +69,9 @@ public class SurveyService {
         return repository.save(survey);
     }
 
+    @Transactional
     public Result addResponse(AddSurveyResponseCommand command) {
-Survey survey = repository.findById(command.surveyId())
+        Survey survey = repository.findById(command.surveyId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey not found"));
         survey.addResponse(command);
         return repository.save(survey);
