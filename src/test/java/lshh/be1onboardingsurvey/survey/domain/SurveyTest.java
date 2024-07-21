@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SurveyTest {
 
@@ -129,4 +130,40 @@ public class SurveyTest {
         }
     }
 
+    @Nested
+    @DisplayName("항목 최신 조회")
+    public class FindLatestItemTest{
+        @Test
+        public void testFindLatestItem() {
+            // Initialize Survey with two items
+
+            SurveyItem initialItem1 = SurveyItem.builder()
+                    .id(1L)
+                    .overridden(fakeClock.now())
+                    .formType(SurveyItemFormType.RADIO)
+                    .build();
+
+            SurveyItem initialItem2 = SurveyItem.builder()
+                    .id(2L)
+                    .preId(1L)
+                    .formType(SurveyItemFormType.RADIO)
+                    .build();
+
+            List<SurveyItem> itemList = new ArrayList<>();
+            itemList.add(initialItem1);
+            itemList.add(initialItem2);
+
+            Survey sut = Survey.builder()
+                .name("Test Survey")
+                .description("This is a test survey")
+                .items(itemList)
+                .build();
+            System.out.println(sut.getItems());
+
+            // Assert that the correct latest item is found
+            Optional<SurveyItem> latestItem = sut.findLatestItem(1L);
+            assertTrue(latestItem.isPresent());
+            assertEquals(2L, latestItem.get().getId());
+        }
+    }
 }

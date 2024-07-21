@@ -49,6 +49,30 @@ public class Survey {
                 .findFirst();
     }
 
+    public Optional<SurveyItem> findPreItem(Long id){
+        SurveyItem item = findItem(id)
+                .orElseThrow(() -> new IllegalArgumentException("Survey item not found"));
+        return findItem(item.getPreId());
+    }
+
+    public Optional<SurveyItem> findItemByPreId(Long preId){
+        var item = this.items.stream()
+                .filter(i -> i.getPreId() != null && i.getPreId().equals(preId))
+                .findFirst();
+        return item;
+    }
+
+    public Optional<SurveyItem> findLatestItem(Long id){
+        return findItem(id)
+                .map(item -> {
+                    while(item.getOverridden() != null){
+                        item = findItemByPreId(item.getId())
+                                .orElseThrow(() -> new IllegalArgumentException("Survey latest item not found"));
+                    }
+                    return item;
+                });
+    }
+
     public Optional<SurveyItem> findItemBySequence(Long sequence){
         return this.items.stream()
                 .filter(i -> i.getSequence().equals(sequence) && i.getOverridden() == null)
@@ -62,7 +86,7 @@ public class Survey {
     }
 
     public void updateItem(UpdateSurveyItemCommand command, Clock clock){
-        SurveyItem latestItem = findItem(command.itemId())
+        SurveyItem latestItem = findLatestItem(command.itemId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey item not found"));
 
         SurveyItem newItem = command.toEntity();

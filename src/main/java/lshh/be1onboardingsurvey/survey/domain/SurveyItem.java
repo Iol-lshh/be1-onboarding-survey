@@ -30,6 +30,8 @@ public class SurveyItem {
     Long sequence;
 
     LocalDateTime overridden;
+
+    Long preId;
   
     @Setter
     @ManyToOne

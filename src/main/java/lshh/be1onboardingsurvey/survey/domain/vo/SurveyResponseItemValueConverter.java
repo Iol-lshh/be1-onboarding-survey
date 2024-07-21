@@ -1,8 +1,7 @@
-package lshh.be1onboardingsurvey.common.lib.jpa;
+package lshh.be1onboardingsurvey.survey.domain.vo;
 
 import jakarta.persistence.AttributeConverter;
 import lshh.be1onboardingsurvey.survey.domain.SurveyItemFormType;
-import lshh.be1onboardingsurvey.survey.domain.vo.SurveyResponseItemValue;
 
 import java.util.Arrays;
 
@@ -10,9 +9,16 @@ public class SurveyResponseItemValueConverter implements AttributeConverter<Surv
 
         @Override
         public String convertToDatabaseColumn(SurveyResponseItemValue attribute) {
-            return """
-                    %s::%s
-                    """.formatted(attribute.type().name(), attribute.value().toString());
+            return
+                switch (attribute.type()) {
+                    case TEXT, TEXTAREA, RADIO -> """
+                            %s::%s""".formatted(attribute.type().name(), attribute.value().toString());
+                    case CHECKBOX -> {
+                        Long[] optionIds = (Long[]) attribute.value();
+                        yield """
+                            %s::%s""".formatted(attribute.type().name(), Arrays.toString(optionIds));
+                    }
+                };
         }
 
         @Override
