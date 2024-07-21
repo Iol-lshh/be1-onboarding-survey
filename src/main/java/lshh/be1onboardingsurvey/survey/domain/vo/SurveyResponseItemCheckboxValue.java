@@ -19,4 +19,5 @@ public record SurveyResponseItemCheckboxValue(
     public SurveyItemFormType type() {
         return SurveyItemFormType.CHECKBOX;
     }
+
 }

@@ -3,7 +3,6 @@ package lshh.be1onboardingsurvey.survey.domain.command;
 import lshh.be1onboardingsurvey.survey.domain.SurveyItem;
 import lshh.be1onboardingsurvey.survey.domain.SurveyItemFormType;
 
-
 public record UpdateSurveyItemCommand(
         Long surveyId,
         Long itemId,
@@ -13,6 +12,11 @@ public record UpdateSurveyItemCommand(
         Boolean required,
         Long sequence
 ){
+    public UpdateSurveyItemCommand {
+        if(surveyId == null || itemId == null){
+            throw new IllegalArgumentException("SurveyId, itemId must not be null");
+        }
+    }
 
     public SurveyItem toEntity() {
         return SurveyItem.builder()

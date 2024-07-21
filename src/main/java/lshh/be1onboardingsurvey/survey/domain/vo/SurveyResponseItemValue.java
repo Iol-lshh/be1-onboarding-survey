@@ -3,8 +3,8 @@ package lshh.be1onboardingsurvey.survey.domain.vo;
 import lshh.be1onboardingsurvey.survey.domain.SurveyItemFormType;
 
 public interface SurveyResponseItemValue <T>{
-    static SurveyResponseItemValue<?> of(SurveyItemFormType option, Object value) {
-        return switch (option) {
+    static SurveyResponseItemValue<?> of(SurveyItemFormType type, Object value) {
+        return switch (type) {
             case TEXT -> {
                 if(!(value instanceof String args)){
                     throw new IllegalArgumentException("Invalid value: " + value);

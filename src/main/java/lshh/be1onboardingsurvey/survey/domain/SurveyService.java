@@ -5,6 +5,7 @@ import lshh.be1onboardingsurvey.common.lib.clock.Clock;
 import lshh.be1onboardingsurvey.survey.domain.command.*;
 import lshh.be1onboardingsurvey.survey.domain.component.SurveyRepository;
 import lshh.be1onboardingsurvey.survey.domain.dto.Result;
+import lshh.be1onboardingsurvey.survey.domain.dto.SurveyResponseView;
 import lshh.be1onboardingsurvey.survey.domain.dto.SurveyView;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,6 @@ public class SurveyService {
     public Optional<SurveyView> findByName(String name) {
         return repository.findByName(name)
                 .map(SurveyView::of);
-
     }
 
     @Transactional
@@ -78,4 +78,16 @@ public class SurveyService {
     }
 
 
+    @Transactional
+    public Result<?> addResponseItem(AddSurveyResponseItemCommand command) {
+        Survey survey = repository.findById(command.surveyId())
+                .orElseThrow(() -> new IllegalArgumentException("Survey not found"));
+        survey.addResponseItem(command);
+        return repository.save(survey);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SurveyResponseView> findResponse(Long surveyId) {
+        return repository.findResponseBySurveyId(surveyId);
+    }
 }

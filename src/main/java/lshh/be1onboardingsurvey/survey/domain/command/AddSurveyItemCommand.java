@@ -11,6 +11,11 @@ public record AddSurveyItemCommand(
         Boolean required,
         Long sequence
 ){
+    public AddSurveyItemCommand {
+        if(surveyId == null){
+            throw new IllegalArgumentException("SurveyId must not be null");
+        }
+    }
 
     public SurveyItem toEntity() {
         return SurveyItem.builder()

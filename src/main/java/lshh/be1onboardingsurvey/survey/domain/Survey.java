@@ -49,17 +49,10 @@ public class Survey {
                 .findFirst();
     }
 
-    public Optional<SurveyItem> findPreItem(Long id){
-        SurveyItem item = findItem(id)
-                .orElseThrow(() -> new IllegalArgumentException("Survey item not found"));
-        return findItem(item.getPreId());
-    }
-
     public Optional<SurveyItem> findItemByPreId(Long preId){
-        var item = this.items.stream()
-                .filter(i -> i.getPreId() != null && i.getPreId().equals(preId))
+        return this.items.stream()
+                .filter(item -> item.getPreId() != null && item.getPreId().equals(preId))
                 .findFirst();
-        return item;
     }
 
     public Optional<SurveyItem> findLatestItem(Long id){
@@ -114,6 +107,22 @@ public class Survey {
     }
 
     public void addResponse(AddSurveyResponseCommand command) {
-        // todo
+        SurveyResponse surveyResponse = command.toEntity();
+        surveyResponse.setSurvey(this);
+        responses.add(surveyResponse);
+    }
+
+    public Optional<SurveyResponse> findResponse(Long id){
+        return this.responses.stream()
+                .filter(response -> response.getId().equals(id))
+                .findFirst();
+    }
+
+    public void addResponseItem(AddSurveyResponseItemCommand command) {
+        SurveyResponse surveyResponse = findResponse(command.responseId())
+                .orElseThrow(() -> new IllegalArgumentException("Survey response not found"));
+        SurveyItem surveyItem = findItem(command.itemId())
+                .orElseThrow(() -> new IllegalArgumentException("Survey item not found"));
+        surveyResponse.addItem(command, surveyItem.getFormType());
     }
 }
