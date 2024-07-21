@@ -21,6 +21,7 @@ public class SurveyTest {
     @DisplayName("항목 추가")
     public class AddItemTest{
         @Test
+        @DisplayName("항목 추가 성공")
         public void testAddItem() {
             // Initialize Survey with empty item list
             Survey sut = Survey.builder()
@@ -52,6 +53,7 @@ public class SurveyTest {
     @DisplayName("항목 옵션 추가")
     public class AddSurveyItemOptionTest{
         @Test
+        @DisplayName("항목 옵션 추가 성공")
         public void testAddSurveyItemOption() {
             // Initialize Survey with single item list
             SurveyItem initialItem = SurveyItem.builder()
@@ -88,6 +90,7 @@ public class SurveyTest {
     @DisplayName("항목 수정")
     public class UpdateItemTest{
         @Test
+        @DisplayName("항목 수정 성공")
         public void testUpdateItemCommand() {
             // Initialize Survey with single item list
             SurveyItem initialItem = SurveyItem.builder()
@@ -133,6 +136,7 @@ public class SurveyTest {
     @DisplayName("항목 최신 조회")
     public class FindLatestItemTest{
         @Test
+        @DisplayName("최신 항목 조회 성공")
         public void testFindLatestItem() {
             // Initialize Survey with two items
 
@@ -169,6 +173,7 @@ public class SurveyTest {
     @DisplayName("응답 추가")
     public class AddResponseTest{
         @Test
+        @DisplayName("응답 추가 성공")
         public void testAddResponseSuccess() {
             // Initialize Survey with empty response list
             Survey sut = Survey.builder()
@@ -193,6 +198,7 @@ public class SurveyTest {
     @DisplayName("응답 항목 추가")
     public class AddResponseItemTest{
         @Test
+        @DisplayName("응답 항목 추가 성공")
         public void testAddResponseItem() {
             SurveyResponse initialResponse = SurveyResponse.builder()
                 .id(1L)

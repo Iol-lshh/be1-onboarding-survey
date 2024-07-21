@@ -157,10 +157,7 @@ public class SurveyServiceTest {
 
             // Assert
             assertEquals(Result.success(), result);
-
         }
-
-
     }
 
     @Nested
