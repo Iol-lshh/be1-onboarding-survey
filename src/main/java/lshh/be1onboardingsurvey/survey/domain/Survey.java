@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lshh.be1onboardingsurvey.common.lib.clock.Clock;
 import lshh.be1onboardingsurvey.survey.domain.command.*;
-import lshh.be1onboardingsurvey.survey.domain.dto.SurveyItemOptionView;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +52,7 @@ public class Survey {
     public Optional<SurveyItem> findItemByPreId(Long preId){
         return this.items.stream()
                 .filter(item -> item.getPreId() != null && item.getPreId().equals(preId))
-                .findFirst();
+                .findFirst();   // todo - 동시성 이슈 처리 필요. overriden과 preId 동시 쓰기에 대하여.. 테스트 우선 작성.
     }
 
     public Optional<SurveyItem> findLatestItem(Long id){

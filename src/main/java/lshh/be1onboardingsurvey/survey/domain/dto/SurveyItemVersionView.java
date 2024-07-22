@@ -9,7 +9,7 @@ public record SurveyItemVersionView(
         Long id,
         String name,
         String description,
-        String form,
+        String formType,
         Boolean required,
         Long sequence,
         List<SurveyItemOptionVersionView> options,

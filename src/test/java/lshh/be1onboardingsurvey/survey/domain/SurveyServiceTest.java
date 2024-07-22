@@ -223,8 +223,8 @@ public class SurveyServiceTest {
         }
 
         @Test
-        @DisplayName("항목 옵션 수정 후, 옵션이 복사되어, 양쪽에 전부 남아있는지 버전 확인")
-        public void testUpdateItemOption_CheckOptionCopy() {
+        @DisplayName("항목 옵션 수정 후, 버전 정상 반영되었는지 확인")
+        public void testUpdateItemOption_CheckVersion() {
             // Arrange
             // survey 생성
             CreateSurveyCommand createSurveyCommand = new CreateSurveyCommand("survey_testUpdateItemOption_CheckOptionCopy", "description");
@@ -283,7 +283,10 @@ public class SurveyServiceTest {
 
             // Assert
             assertEquals(Result.success(), result);
+            SurveyResponseView responseView = surveyService.findResponses(surveyId).getFirst();
+            assertEquals(surveyId, responseView.surveyId());
         }
+
     }
 
     @Nested
@@ -306,7 +309,7 @@ public class SurveyServiceTest {
             // survey response 생성
             AddSurveyResponseCommand addSurveyResponseCommand = new AddSurveyResponseCommand(surveyId);
             surveyService.addResponse(addSurveyResponseCommand);
-            SurveyResponseView responseView = surveyService.findResponse(surveyId).getFirst();
+            SurveyResponseView responseView = surveyService.findResponses(surveyId).getFirst();
 
             // Act
             // response item 추가
@@ -320,10 +323,9 @@ public class SurveyServiceTest {
 
             // Assert
             assertEquals(Result.success(), result);
-            SurveyResponseView responseView2 = surveyService.findResponse(surveyId).getFirst();
+            SurveyResponseView responseView2 = surveyService.findResponses(surveyId).getFirst();
             SurveyResponseItemView itemView = responseView2.items().getFirst();
             assertEquals("item_testAddResponseItem_Simple", itemView.value());
-
         }
     }
 
