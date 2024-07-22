@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lshh.be1onboardingsurvey.common.lib.clock.Clock;
 import lshh.be1onboardingsurvey.survey.domain.command.*;
+import lshh.be1onboardingsurvey.survey.domain.dto.SurveyItemOptionView;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,19 +83,15 @@ public class Survey {
     public void updateItem(UpdateSurveyItemCommand command, Clock clock){
         SurveyItem latestItem = findLatestItem(command.itemId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey item not found"));
-
         SurveyItem newItem = command.toEntity();
         switch(command.form()){
-            case TEXT:
-            case TEXTAREA:
-                break;
-            case RADIO:
-            case CHECKBOX:
-                List<SurveyItemOption> options = latestItem.getOptions();
+            case TEXT, TEXTAREA -> {}
+            case RADIO, CHECKBOX -> {
+                List<SurveyItemOption> options = latestItem.getOptions().stream().map(option -> option.toCopy(newItem)).toList();
                 newItem.addItemOptions(options);
-                break;
+            }
         }
-
+        newItem.setPreId(latestItem.getId());
         latestItem.setOverridden(clock);
         newItem.setSurvey(this);
         this.items.add(newItem);

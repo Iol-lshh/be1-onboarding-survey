@@ -5,6 +5,7 @@ import lshh.be1onboardingsurvey.common.lib.clock.Clock;
 import lshh.be1onboardingsurvey.survey.domain.command.*;
 import lshh.be1onboardingsurvey.survey.domain.component.SurveyRepository;
 import lshh.be1onboardingsurvey.survey.domain.dto.Result;
+import lshh.be1onboardingsurvey.survey.domain.dto.SurveyAllVersionView;
 import lshh.be1onboardingsurvey.survey.domain.dto.SurveyResponseView;
 import lshh.be1onboardingsurvey.survey.domain.dto.SurveyView;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,12 @@ public class SurveyService {
     public Optional<SurveyView> findByName(String name) {
         return repository.findByName(name)
                 .map(SurveyView::of);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<SurveyAllVersionView> findWithAllVersion(Long id) {
+        return repository.findById(id)
+                .map(SurveyAllVersionView::of);
     }
 
     @Transactional
