@@ -15,7 +15,7 @@ public record SurveyResponseDetailView (
     public static SurveyResponseDetailView of(SurveyResponse surveyResponse) {
         Survey survey = surveyResponse.getSurvey();
         List<SurveyResponseItem> items = surveyResponse.getItems();
-        // todo - 좀.. 짜침... 다른 고도화를 생각해보자. projection 바로 레포지토리에서 가져오기 vs response와 item에게 각각 일 나눠 시키기
+        // todo - 좀.. 짜침... 다른 고도화를 생각해보자. projection 바로 레포지토리에서 가져오기 vs response와 item에게 각각 일 나눠 시키기. 하이버네이트가 찍어주는 쿼리 한번 보자..
         List<SurveyResponseItemDetailView> itemDetails = items.stream()
                 .map(responseItem -> {
                     SurveyItem item = survey.findItem(responseItem.getSurveyItemId()).orElse(null);
