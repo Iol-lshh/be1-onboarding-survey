@@ -58,7 +58,7 @@ public class SurveyService {
         return repository.save(survey);
     }
 
-    @AdvisoryLock(key = "#updateSurveyItemCommand.itemId()")
+    @AdvisoryLock(prekey = "updateItem", key = "#updateSurveyItemCommand.itemId()")
     @Transactional
     public Result<?> updateItem(UpdateSurveyItemCommand updateSurveyItemCommand) {
         Survey survey = repository.findById(updateSurveyItemCommand.surveyId())
@@ -68,7 +68,7 @@ public class SurveyService {
     }
 
     @Transactional
-    @AdvisoryLock(key = "#command.optionId()")
+    @AdvisoryLock(prekey ="updateItemOption", key = "#command.optionId()")
     public Result<?> updateItemOption(UpdateSurveyItemOptionCommand command) {
         Survey survey = repository.findById(command.surveyId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey not found"));

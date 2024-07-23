@@ -527,10 +527,10 @@ public class SurveyServiceTest {
 
     @Nested
     @DisplayName("Survey 응답 목록 상세 조회")
-    class FindResponseDetailsTest{
+    class FindResponseDetailsTest {
         @Test
         @DisplayName("간단한 응답 목록 상세 조회 - TEXT")
-        public void testFindResponseDetails_simple_TEXT(){
+        public void testFindResponseDetails_simple_TEXT() {
             // Arrange
             // survey 생성
             CreateSurveyCommand createSurveyCommand = new CreateSurveyCommand("testFindResponseDetails_simple", "description");
@@ -565,7 +565,7 @@ public class SurveyServiceTest {
 
         @Test
         @DisplayName("간단한 응답 목록 상세 조회 - RADIO")
-        public void testFindResponseDetails_simple_RADIO(){
+        public void testFindResponseDetails_simple_RADIO() {
             // Arrange
             // survey 생성
             CreateSurveyCommand createSurveyCommand = new CreateSurveyCommand("testFindResponseDetails_simple_RADIO", "description");
@@ -605,7 +605,7 @@ public class SurveyServiceTest {
 
         @Test
         @DisplayName("간단한 응답 목록 상세 조회 - CHECKBOX")
-        public void testFindResponseDetails_simple_CHECKBOX(){
+        public void testFindResponseDetails_simple_CHECKBOX() {
             // Arrange
             // survey 생성
             CreateSurveyCommand createSurveyCommand = new CreateSurveyCommand("testFindResponseDetails_simple_CHECKBOX", "description");
@@ -618,9 +618,12 @@ public class SurveyServiceTest {
             SurveyView surveyView2 = surveyService.findByName("testFindResponseDetails_simple_CHECKBOX").getFirst();
             Long surveyItemId = surveyView2.items().getFirst().id();
             // survey item option 생성
-            AddSurveyItemOptionCommand addSurveyItemOptionCommand = new AddSurveyItemOptionCommand(surveyId, surveyItemId, "option_testFindResponseDetails_simple_CHECKBOX", "description", 1L);
-            surveyService.addItemOption(addSurveyItemOptionCommand);
-            Long optionId = surveyService.findByName("testFindResponseDetails_simple_CHECKBOX").getFirst().items().getFirst().options().getFirst().id();
+            AddSurveyItemOptionCommand addSurveyItemOptionCommand1 = new AddSurveyItemOptionCommand(surveyId, surveyItemId, "option_testFindResponseDetails_simple_CHECKBOX1", "description", 1L);
+            surveyService.addItemOption(addSurveyItemOptionCommand1);
+            AddSurveyItemOptionCommand addSurveyItemOptionCommand2 = new AddSurveyItemOptionCommand(surveyId, surveyItemId, "option_testFindResponseDetails_simple_CHECKBOX2", "description", 1L);
+            surveyService.addItemOption(addSurveyItemOptionCommand2);
+            Long optionId1 = surveyService.findByName("testFindResponseDetails_simple_CHECKBOX").getFirst().items().getFirst().options().getFirst().id();
+            Long optionId2 = surveyService.findByName("testFindResponseDetails_simple_CHECKBOX").getFirst().items().getFirst().options().get(1).id();
 
             // survey response 생성
             AddSurveyResponseCommand addSurveyResponseCommand = new AddSurveyResponseCommand(surveyId);
@@ -631,7 +634,7 @@ public class SurveyServiceTest {
                     surveyId,
                     responseView.id(),
                     surveyItemId,
-                    new Long[]{optionId}
+                    new Long[]{optionId1, optionId2}
             );
             surveyService.addResponseItem(addSurveyResponseItemCommand);
 
@@ -641,7 +644,76 @@ public class SurveyServiceTest {
             // Assert
             System.out.println(responseDetails);
             assertEquals(1, responseDetails.size());
+
+        }
+
+        @Test
+        @DisplayName("응답 목록 상세 조회 - TEXT, RADIO, CHECKBOX 혼합")
+        public void testFindResponseDetails_mix() {
+            // Arrange
+            // survey 생성
+            CreateSurveyCommand createSurveyCommand = new CreateSurveyCommand("testFindResponseDetails_mix", "description");
+            surveyService.create(createSurveyCommand);
+            SurveyView surveyView = surveyService.findByName("testFindResponseDetails_mix").getFirst();
+            Long surveyId = surveyView.id();
+            // survey item 생성
+            AddSurveyItemCommand addSurveyItemCommand1 = new AddSurveyItemCommand(surveyId, "testFindResponseDetails_mix_TEXT", "description", SurveyItemFormType.TEXT, true, 1L);
+            surveyService.addItem(addSurveyItemCommand1);
+            AddSurveyItemCommand addSurveyItemCommand2 = new AddSurveyItemCommand(surveyId, "testFindResponseDetails_mix_RADIO", "description", SurveyItemFormType.RADIO, true, 1L);
+            surveyService.addItem(addSurveyItemCommand2);
+            AddSurveyItemCommand addSurveyItemCommand3 = new AddSurveyItemCommand(surveyId, "testFindResponseDetails_mix_CHECKBOX", "description", SurveyItemFormType.CHECKBOX, true, 1L);
+            surveyService.addItem(addSurveyItemCommand3);
+            SurveyView surveyView2 = surveyService.findByName("testFindResponseDetails_mix").getFirst();
+            Long surveyItemId1 = surveyView2.items().get(0).id();
+            Long surveyItemId2 = surveyView2.items().get(1).id();
+            Long surveyItemId3 = surveyView2.items().get(2).id();
+            // survey item option 생성 - radio
+            AddSurveyItemOptionCommand addSurveyItemOptionCommand_radio = new AddSurveyItemOptionCommand(surveyId, surveyItemId2, "option_testFindResponseDetails_mix_RADIO", "description", 1L);
+            surveyService.addItemOption(addSurveyItemOptionCommand_radio);
+            SurveyItemView itemView2 = surveyService.findByName("testFindResponseDetails_mix").getFirst().items().get(1);
+            Long optionId_radio = itemView2.options().getFirst().id();
+            // survey item option 생성 - checkbox
+            AddSurveyItemOptionCommand addSurveyItemOptionCommand_checkbox1 = new AddSurveyItemOptionCommand(surveyId, surveyItemId3, "option_testFindResponseDetails_mix_CheckBox1", "description", 1L);
+            surveyService.addItemOption(addSurveyItemOptionCommand_checkbox1);
+            AddSurveyItemOptionCommand addSurveyItemOptionCommand_checkbox2 = new AddSurveyItemOptionCommand(surveyId, surveyItemId3, "option_testFindResponseDetails_mix_CheckBox2", "description", 1L);
+            surveyService.addItemOption(addSurveyItemOptionCommand_checkbox2);
+            SurveyItemView itemView3 = surveyService.findByName("testFindResponseDetails_mix").getFirst().items().get(2);
+            Long optionId_checkbox1 = itemView3.options().get(0).id();
+            Long optionId_checkbox2 = itemView3.options().get(1).id();
+            // survey response 생성
+            AddSurveyResponseCommand addSurveyResponseCommand = new AddSurveyResponseCommand(surveyId);
+            surveyService.addResponse(addSurveyResponseCommand);
+            SurveyResponseView responseView = surveyService.findResponses(surveyId).getFirst();
+            // response item 생성
+            AddSurveyResponseItemCommand addSurveyResponseItemCommand1 = new AddSurveyResponseItemCommand(
+                    surveyId,
+                    responseView.id(),
+                    surveyItemId1,
+                    "item_testFindResponseDetails_mix_TEXT"
+            );
+            surveyService.addResponseItem(addSurveyResponseItemCommand1);
+            AddSurveyResponseItemCommand addSurveyResponseItemCommand2 = new AddSurveyResponseItemCommand(
+                    surveyId,
+                    responseView.id(),
+                    surveyItemId2,
+                    optionId_radio
+            );
+            surveyService.addResponseItem(addSurveyResponseItemCommand2);
+            AddSurveyResponseItemCommand addSurveyResponseItemCommand3 = new AddSurveyResponseItemCommand(
+                    surveyId,
+                    responseView.id(),
+                    surveyItemId3,
+                    new Long[]{optionId_checkbox1, optionId_checkbox2}
+            );
+            surveyService.addResponseItem(addSurveyResponseItemCommand3);
+
+            // Act
+            List<SurveyResponseDetailView> responseDetails = surveyService.findResponseDetails(surveyId);
+
+            // Assert
+            System.out.println(responseDetails);
+            assertEquals(1, responseDetails.size());
+
         }
     }
-
 }

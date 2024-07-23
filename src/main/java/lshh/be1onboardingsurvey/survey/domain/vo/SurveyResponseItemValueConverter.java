@@ -30,7 +30,7 @@ public class SurveyResponseItemValueConverter implements AttributeConverter<Surv
                 case RADIO -> Long.valueOf(valueYet);
                 case CHECKBOX -> {
                     String valueStr = valueYet.substring(1, valueYet.length() - 1); // remove '[' and ']'
-                    yield  Arrays.stream(valueStr.split(",")).map(Long::valueOf).toArray(Long[]::new);
+                    yield Arrays.stream(valueStr.split(", ")).map(Long::valueOf).toArray(Long[]::new);
                 }
             };
             return SurveyResponseItemValue.of(type, value);

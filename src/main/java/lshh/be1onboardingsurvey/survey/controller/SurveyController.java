@@ -62,9 +62,31 @@ public class SurveyController {
     }
 
     @Operation(summary = "응답 항목 추가")
-    @PostMapping("/{surveyId}/response/{responseId}/item")
-    public Response<?> addResponseItem(@RequestBody AddSurveyResponseItemCommand command) {
-        Result<?> result = service.addResponseItem(command);
+    @PostMapping("/{surveyId}/response/{responseId}/text")
+    public Response<?> addResponseItemText(@RequestBody AddSurveyResponseTextItemCommand command) {
+        AddSurveyResponseItemCommand _command = AddSurveyResponseItemCommand.of(command);
+        Result<?> result = service.addResponseItem(_command);
+        return Response.of(result);
+    }
+    @Operation(summary = "응답 항목 추가")
+    @PostMapping("/{surveyId}/response/{responseId}/textarea")
+    public Response<?> addResponseItemTextarea(@RequestBody AddSurveyResponseTextAreaItemCommand command) {
+        AddSurveyResponseItemCommand _command = AddSurveyResponseItemCommand.of(command);
+        Result<?> result = service.addResponseItem(_command);
+        return Response.of(result);
+    }
+    @Operation(summary = "응답 항목 추가")
+    @PostMapping("/{surveyId}/response/{responseId}/radio")
+    public Response<?> addResponseItemRadio(@RequestBody AddSurveyResponseRadioItemCommand command) {
+        AddSurveyResponseItemCommand _command = AddSurveyResponseItemCommand.of(command);
+        Result<?> result = service.addResponseItem(_command);
+        return Response.of(result);
+    }
+    @Operation(summary = "응답 항목 추가")
+    @PostMapping("/{surveyId}/response/{responseId}/checkbox")
+    public Response<?> addResponseItemCheckbox(@RequestBody AddSurveyResponseCheckboxItemCommand command) {
+        AddSurveyResponseItemCommand _command = AddSurveyResponseItemCommand.of(command);
+        Result<?> result = service.addResponseItem(_command);
         return Response.of(result);
     }
 

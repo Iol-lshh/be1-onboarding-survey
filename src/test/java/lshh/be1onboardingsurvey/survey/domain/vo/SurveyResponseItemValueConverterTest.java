@@ -46,7 +46,7 @@ public class SurveyResponseItemValueConverterTest {
         @Test
         @DisplayName("CHECKBOX 타입으로 변환")
         public void testConvertToEntityAttributeCheckbox() {
-            String dbData = "CHECKBOX::[1,2]";
+            String dbData = "CHECKBOX::[1, 2]";
             SurveyResponseItemValue<?> attribute = converter.convertToEntityAttribute(dbData);
 
             assertEquals(SurveyItemFormType.CHECKBOX, attribute.type());
