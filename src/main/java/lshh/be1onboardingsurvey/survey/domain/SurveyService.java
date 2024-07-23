@@ -25,9 +25,9 @@ public class SurveyService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<SurveyView> findByName(String name) {
-        return repository.findByName(name)
-                .map(SurveyView::of);
+    public List<SurveyView> findByName(String name) {
+        return repository.findByName(name).stream()
+                .map(SurveyView::of).toList();
     }
 
     @Transactional(readOnly = true)
@@ -68,6 +68,7 @@ public class SurveyService {
     }
 
     @Transactional
+    @AdvisoryLock(key = "#command.optionId()")
     public Result<?> updateItemOption(UpdateSurveyItemOptionCommand command) {
         Survey survey = repository.findById(command.surveyId())
                 .orElseThrow(() -> new IllegalArgumentException("Survey not found"));
