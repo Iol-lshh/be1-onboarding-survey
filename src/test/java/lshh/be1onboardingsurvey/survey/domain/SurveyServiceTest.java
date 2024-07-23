@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -147,6 +150,101 @@ public class SurveyServiceTest {
             assertEquals(1, latest.options().size());
             assertEquals(1, origin.options().size());
             assertEquals(latest.options().getFirst().name(), origin.options().getFirst().name());
+        }
+
+        @Test
+        @DisplayName("한 항목을 여러번 수정하였을 경우, 두 버전은 쓰인 순서대로 버저닝된다.")
+        public void testUpdateItem_WithManyTimes() throws InterruptedException {
+            // Arrange
+            // survey 생성
+            CreateSurveyCommand createSurveyCommand = new CreateSurveyCommand("survey_testUpdateItem_withConcurrency", "description");
+            surveyService.create(createSurveyCommand);
+            SurveyView surveyView = surveyService.findByName("survey_testUpdateItem_withConcurrency").orElseThrow();
+            Long surveyId = surveyView.id();
+            // survey item 생성
+            AddSurveyItemCommand addSurveyItemCommand = new AddSurveyItemCommand(surveyId, "item_testUpdateItem_withConcurrency", "description", SurveyItemFormType.RADIO, true, 1L);
+            surveyService.addItem(addSurveyItemCommand);
+            SurveyView surveyViewWithItem = surveyService.findByName("survey_testUpdateItem_withConcurrency").orElseThrow();
+            Long itemId = surveyViewWithItem.items().getFirst().id();
+
+            // Act
+            int testCount = 2;
+            List<UpdateSurveyItemCommand> commands = IntStream.range(0, testCount).mapToObj(i -> new UpdateSurveyItemCommand(
+                    surveyId,
+                    itemId,
+                    "item_updated_testUpdateItem_withConcurrency_" + i,
+                    "description",
+                    SurveyItemFormType.RADIO,
+                    true,
+                    2L
+            )).toList();
+            IntStream.range(0, testCount).forEach(i -> {
+                surveyService.updateItem(commands.get(i));
+            });
+
+            // Assert
+            SurveyAllVersionView updatedSurvey = surveyService.findWithAllVersion(surveyId).orElseThrow();
+            assertEquals(testCount + 1, updatedSurvey.items().size());
+            List<SurveyItemVersionView> allVersions = updatedSurvey.items();
+            System.out.println(allVersions);
+            assertEquals(1, allVersions.stream().filter(i -> i.overridden() == null).count());
+            assertEquals(testCount, allVersions.stream().filter(i -> i.overridden() != null).count());
+            // 순차적으로 preid로 버저닝 되었는가 확인
+            for (int i = 0; i < testCount; i++) {
+                assertEquals(allVersions.get(i).id(), allVersions.get(i + 1).preId());
+            }
+        }
+
+        @Test
+        @DisplayName("동시에 한 항목을 수정하였을 경우, 두 버전은 쓰인 순서대로 버저닝된다.")
+        public void testUpdateItem_withConcurrency() throws InterruptedException {
+            // Arrange
+            // survey 생성
+            CreateSurveyCommand createSurveyCommand = new CreateSurveyCommand("survey_testUpdateItem_withConcurrency", "description");
+            surveyService.create(createSurveyCommand);
+            SurveyView surveyView = surveyService.findByName("survey_testUpdateItem_withConcurrency").orElseThrow();
+            Long surveyId = surveyView.id();
+            // survey item 생성
+            AddSurveyItemCommand addSurveyItemCommand = new AddSurveyItemCommand(surveyId, "item_testUpdateItem_withConcurrency", "description", SurveyItemFormType.RADIO, true, 1L);
+            surveyService.addItem(addSurveyItemCommand);
+            SurveyView surveyViewWithItem = surveyService.findByName("survey_testUpdateItem_withConcurrency").orElseThrow();
+            Long itemId = surveyViewWithItem.items().getFirst().id();
+            // survey item option 생성
+            AddSurveyItemOptionCommand command = new AddSurveyItemOptionCommand(surveyId, itemId, "option_testUpdateItem_withConcurrency", "description", 1L);
+            surveyService.addItemOption(command);
+
+            // Act
+            int testCount = 2;
+            List<UpdateSurveyItemCommand> commands = IntStream.range(0, testCount).mapToObj(i -> new UpdateSurveyItemCommand(
+                    surveyId,
+                    itemId,
+                    "item_updated_testUpdateItem_withConcurrency_" + i,
+                    "description",
+                    SurveyItemFormType.RADIO,
+                    true,
+                    2L
+            )).toList();
+
+            try (ExecutorService executorService = Executors.newFixedThreadPool(testCount)) {
+                IntStream.range(0, testCount).forEach(i -> {
+                    executorService.execute(() -> {
+                        surveyService.updateItem(commands.get(i));
+                    });
+                });
+                executorService.shutdown();
+            }
+
+            // Assert
+            SurveyAllVersionView updatedSurvey = surveyService.findWithAllVersion(surveyId).orElseThrow();
+            assertEquals(testCount + 1, updatedSurvey.items().size());
+            List<SurveyItemVersionView> allVersions = updatedSurvey.items();
+            System.out.println(allVersions);
+            assertEquals(1, allVersions.stream().filter(i -> i.overridden() == null).count());
+            assertEquals(testCount, allVersions.stream().filter(i -> i.overridden() != null).count());
+            // 순차적으로 preid로 버저닝 되었는가 확인
+            for (int i = 0; i < testCount; i++) {
+                assertEquals(allVersions.get(i).id(), allVersions.get(i + 1).preId());
+            }
         }
     }
 

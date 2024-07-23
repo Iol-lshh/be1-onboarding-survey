@@ -1,6 +1,7 @@
 package lshh.be1onboardingsurvey.survey.domain;
 
 import lombok.RequiredArgsConstructor;
+import lshh.be1onboardingsurvey.common.lib.cache.lock.AdvisoryLock;
 import lshh.be1onboardingsurvey.common.lib.clock.Clock;
 import lshh.be1onboardingsurvey.survey.domain.command.*;
 import lshh.be1onboardingsurvey.survey.domain.component.SurveyRepository;
@@ -57,6 +58,7 @@ public class SurveyService {
         return repository.save(survey);
     }
 
+    @AdvisoryLock(key = "#updateSurveyItemCommand.itemId()")
     @Transactional
     public Result<?> updateItem(UpdateSurveyItemCommand updateSurveyItemCommand) {
         Survey survey = repository.findById(updateSurveyItemCommand.surveyId())
