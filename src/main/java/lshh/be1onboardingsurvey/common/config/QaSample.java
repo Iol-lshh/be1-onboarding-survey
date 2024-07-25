@@ -1,6 +1,6 @@
 package lshh.be1onboardingsurvey.common.config;
 
-import lshh.be1onboardingsurvey.survey.domain.SurveyItemFormType;
+import lshh.be1onboardingsurvey.survey.domain.entity.SurveyItemFormType;
 import lshh.be1onboardingsurvey.survey.domain.SurveyService;
 import lshh.be1onboardingsurvey.survey.domain.command.AddSurveyItemCommand;
 import lshh.be1onboardingsurvey.survey.domain.command.AddSurveyItemOptionCommand;

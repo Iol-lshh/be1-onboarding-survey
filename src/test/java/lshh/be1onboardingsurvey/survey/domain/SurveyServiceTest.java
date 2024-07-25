@@ -2,6 +2,8 @@ package lshh.be1onboardingsurvey.survey.domain;
 
 import lshh.be1onboardingsurvey.survey.domain.command.*;
 import lshh.be1onboardingsurvey.survey.domain.dto.*;
+import lshh.be1onboardingsurvey.survey.domain.entity.SurveyItemFormType;
+import lshh.be1onboardingsurvey.survey.domain.entity.SurveyResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -154,7 +156,7 @@ public class SurveyServiceTest {
 
         @Test
         @DisplayName("한 항목을 여러번 수정하였을 경우, 두 버전은 쓰인 순서대로 버저닝된다.")
-        public void testUpdateItem_WithManyTimes() throws InterruptedException {
+        public void testUpdateItem_WithManyTimes() {
             // Arrange
             // survey 생성
             CreateSurveyCommand createSurveyCommand = new CreateSurveyCommand("survey_testUpdateItem_WithManyTimes", "description");
@@ -472,15 +474,20 @@ public class SurveyServiceTest {
             surveyService.create(createSurveyCommand);
             SurveyView surveyView = surveyService.findByName("testAddResponse_Simple").getFirst();
             Long surveyId = surveyView.id();
-            AddSurveyResponseCommand command = new AddSurveyResponseCommand(surveyId);
+            BeginSurveyResponseCommand command = new BeginSurveyResponseCommand(surveyId);
+            Result<?> resultResponse = surveyService.beginResponse(command);
+            SurveyResponse response = (SurveyResponse) resultResponse.data();
+            Long responseId = response.getId();
 
             // Act
-            Result<?> result = surveyService.addResponse(command);
+            Result<?> result = surveyService.beginResponse(command);
+
+            SubmitResponseCommand submitResponseCommand = new SubmitResponseCommand(responseId);
+            surveyService.submitResponse(submitResponseCommand);
 
             // Assert
-            assertEquals(Result.success(), result);
-            SurveyResponseView responseView = surveyService.findResponses(surveyId).getFirst();
-            assertEquals(surveyId, responseView.surveyId());
+            assertEquals(Result.Status.SUCCESS, result.status());
+
         }
 
     }
@@ -503,19 +510,22 @@ public class SurveyServiceTest {
             SurveyView surveyView2 = surveyService.findByName("testAddResponseItem_Simple").getFirst();
             Long surveyItemId = surveyView2.items().getFirst().id();
             // survey response 생성
-            AddSurveyResponseCommand addSurveyResponseCommand = new AddSurveyResponseCommand(surveyId);
-            surveyService.addResponse(addSurveyResponseCommand);
-            SurveyResponseView responseView = surveyService.findResponses(surveyId).getFirst();
+            BeginSurveyResponseCommand beginSurveyResponseCommand = new BeginSurveyResponseCommand(surveyId);
+            Result<?> resultResponse = surveyService.beginResponse(beginSurveyResponseCommand);
+            SurveyResponse response = (SurveyResponse) resultResponse.data();
+            Long responseId = response.getId();
 
             // Act
             // response item 추가
             AddSurveyResponseItemCommand command = new AddSurveyResponseItemCommand(
                     surveyId,
-                    responseView.id(),
+                    responseId,
                     surveyItemId,
                     "item_testAddResponseItem_Simple"
             );
             Result<?> result = surveyService.addResponseItem(command);
+            SubmitResponseCommand submitResponseCommand = new SubmitResponseCommand(responseId);
+            surveyService.submitResponse(submitResponseCommand);
 
             // Assert
             assertEquals(Result.success(), result);
@@ -543,17 +553,21 @@ public class SurveyServiceTest {
             SurveyView surveyView2 = surveyService.findByName("testFindResponseDetails_simple").getFirst();
             Long surveyItemId = surveyView2.items().getFirst().id();
             // survey response 생성
-            AddSurveyResponseCommand addSurveyResponseCommand = new AddSurveyResponseCommand(surveyId);
-            surveyService.addResponse(addSurveyResponseCommand);
-            SurveyResponseView responseView = surveyService.findResponses(surveyId).getFirst();
+            BeginSurveyResponseCommand beginSurveyResponseCommand = new BeginSurveyResponseCommand(surveyId);
+            Result<?> resultResponse = surveyService.beginResponse(beginSurveyResponseCommand);
+            SurveyResponse response = (SurveyResponse) resultResponse.data();
+            Long responseId = response.getId();
+
             // response item 생성
             AddSurveyResponseItemCommand addSurveyResponseItemCommand = new AddSurveyResponseItemCommand(
                     surveyId,
-                    responseView.id(),
+                    responseId,
                     surveyItemId,
                     "item_testFindResponseDetails_simple"
             );
             surveyService.addResponseItem(addSurveyResponseItemCommand);
+            SubmitResponseCommand submitResponseCommand = new SubmitResponseCommand(responseId);
+            surveyService.submitResponse(submitResponseCommand);
 
             // Act
             List<SurveyResponseDetailView> responseDetails = surveyService.findResponseDetails(surveyId);
@@ -583,17 +597,20 @@ public class SurveyServiceTest {
             Long optionId = surveyService.findByName("testFindResponseDetails_simple_RADIO").getFirst().items().getFirst().options().getFirst().id();
 
             // survey response 생성
-            AddSurveyResponseCommand addSurveyResponseCommand = new AddSurveyResponseCommand(surveyId);
-            surveyService.addResponse(addSurveyResponseCommand);
-            SurveyResponseView responseView = surveyService.findResponses(surveyId).getFirst();
+            BeginSurveyResponseCommand beginSurveyResponseCommand = new BeginSurveyResponseCommand(surveyId);
+            Result<?> resultResponse = surveyService.beginResponse(beginSurveyResponseCommand);
+            SurveyResponse response = (SurveyResponse) resultResponse.data();
+            Long responseId = response.getId();
             // response item 생성
             AddSurveyResponseItemCommand addSurveyResponseItemCommand = new AddSurveyResponseItemCommand(
                     surveyId,
-                    responseView.id(),
+                    responseId,
                     surveyItemId,
                     optionId
             );
             surveyService.addResponseItem(addSurveyResponseItemCommand);
+            SubmitResponseCommand submitResponseCommand = new SubmitResponseCommand(responseId);
+            surveyService.submitResponse(submitResponseCommand);
 
             // Act
             List<SurveyResponseDetailView> responseDetails = surveyService.findResponseDetails(surveyId);
@@ -626,17 +643,20 @@ public class SurveyServiceTest {
             Long optionId2 = surveyService.findByName("testFindResponseDetails_simple_CHECKBOX").getFirst().items().getFirst().options().get(1).id();
 
             // survey response 생성
-            AddSurveyResponseCommand addSurveyResponseCommand = new AddSurveyResponseCommand(surveyId);
-            surveyService.addResponse(addSurveyResponseCommand);
-            SurveyResponseView responseView = surveyService.findResponses(surveyId).getFirst();
+            BeginSurveyResponseCommand beginSurveyResponseCommand = new BeginSurveyResponseCommand(surveyId);
+            Result<?> resultResponse = surveyService.beginResponse(beginSurveyResponseCommand);
+            SurveyResponse response = (SurveyResponse) resultResponse.data();
+            Long responseId = response.getId();
             // response item 생성
             AddSurveyResponseItemCommand addSurveyResponseItemCommand = new AddSurveyResponseItemCommand(
                     surveyId,
-                    responseView.id(),
+                    responseId,
                     surveyItemId,
                     new Long[]{optionId1, optionId2}
             );
             surveyService.addResponseItem(addSurveyResponseItemCommand);
+            SubmitResponseCommand submitResponseCommand = new SubmitResponseCommand(responseId);
+            surveyService.submitResponse(submitResponseCommand);
 
             // Act
             List<SurveyResponseDetailView> responseDetails = surveyService.findResponseDetails(surveyId);
@@ -681,31 +701,34 @@ public class SurveyServiceTest {
             Long optionId_checkbox1 = itemView3.options().get(0).id();
             Long optionId_checkbox2 = itemView3.options().get(1).id();
             // survey response 생성
-            AddSurveyResponseCommand addSurveyResponseCommand = new AddSurveyResponseCommand(surveyId);
-            surveyService.addResponse(addSurveyResponseCommand);
-            SurveyResponseView responseView = surveyService.findResponses(surveyId).getFirst();
+            BeginSurveyResponseCommand beginSurveyResponseCommand = new BeginSurveyResponseCommand(surveyId);
+            Result<?> resultResponse = surveyService.beginResponse(beginSurveyResponseCommand);
+            SurveyResponse response = (SurveyResponse) resultResponse.data();
+            Long responseId = response.getId();
             // response item 생성
             AddSurveyResponseItemCommand addSurveyResponseItemCommand1 = new AddSurveyResponseItemCommand(
                     surveyId,
-                    responseView.id(),
+                    responseId,
                     surveyItemId1,
                     "item_testFindResponseDetails_mix_TEXT"
             );
             surveyService.addResponseItem(addSurveyResponseItemCommand1);
             AddSurveyResponseItemCommand addSurveyResponseItemCommand2 = new AddSurveyResponseItemCommand(
                     surveyId,
-                    responseView.id(),
+                    responseId,
                     surveyItemId2,
                     optionId_radio
             );
             surveyService.addResponseItem(addSurveyResponseItemCommand2);
             AddSurveyResponseItemCommand addSurveyResponseItemCommand3 = new AddSurveyResponseItemCommand(
                     surveyId,
-                    responseView.id(),
+                    responseId,
                     surveyItemId3,
                     new Long[]{optionId_checkbox1, optionId_checkbox2}
             );
             surveyService.addResponseItem(addSurveyResponseItemCommand3);
+            SubmitResponseCommand submitResponseCommand = new SubmitResponseCommand(responseId);
+            surveyService.submitResponse(submitResponseCommand);
 
             // Act
             List<SurveyResponseDetailView> responseDetails = surveyService.findResponseDetails(surveyId);

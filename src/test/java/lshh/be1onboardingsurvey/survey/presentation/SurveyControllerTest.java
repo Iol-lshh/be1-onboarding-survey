@@ -1,4 +1,4 @@
-package lshh.be1onboardingsurvey.survey.controller;
+package lshh.be1onboardingsurvey.survey.presentation;
 
 import lshh.be1onboardingsurvey.survey.domain.command.*;
 import lshh.be1onboardingsurvey.survey.domain.SurveyService;
@@ -148,7 +148,7 @@ public class SurveyControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.status", equalTo("FAIL")))
                     .andExpect(jsonPath("$.data", equalTo("""
-                         JSON parse error: Cannot deserialize value of type `lshh.be1onboardingsurvey.survey.domain.SurveyItemFormType` from String "INVALID": not one of the values accepted for Enum class: [TEXTAREA, CHECKBOX, TEXT, RADIO]""")));
+                            JSON parse error: Cannot deserialize value of type `lshh.be1onboardingsurvey.survey.domain.entity.SurveyItemFormType` from String "INVALID": not one of the values accepted for Enum class: [TEXTAREA, CHECKBOX, TEXT, RADIO]""")));
         }
     }
 
@@ -336,7 +336,7 @@ public class SurveyControllerTest {
         @DisplayName("Survey 응답 추가 성공")
         public void addResponse_success() throws Exception {
             Result result = new Result<>(Result.Status.SUCCESS, null);
-            Mockito.when(surveyService.addResponse(any(AddSurveyResponseCommand.class))).thenReturn(result);
+            Mockito.when(surveyService.beginResponse(any(BeginSurveyResponseCommand.class))).thenReturn(result);
 
             // when
             mockMvc.perform(
@@ -364,7 +364,7 @@ public class SurveyControllerTest {
                     )
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.status", equalTo("FAIL")))
-                    .andExpect(jsonPath("$.data", equalTo("JSON parse error: Cannot construct instance of `lshh.be1onboardingsurvey.survey.domain.command.AddSurveyResponseCommand`, problem: SurveyId must not be null")));
+                    .andExpect(jsonPath("$.data", equalTo("JSON parse error: Cannot construct instance of `lshh.be1onboardingsurvey.survey.domain.command.BeginSurveyResponseCommand`, problem: SurveyId must not be null")));
         }
     }
 

@@ -1,7 +1,7 @@
 package lshh.be1onboardingsurvey.survey.domain.vo;
 
 import jakarta.persistence.AttributeConverter;
-import lshh.be1onboardingsurvey.survey.domain.SurveyItemFormType;
+import lshh.be1onboardingsurvey.survey.domain.entity.SurveyItemFormType;
 
 import java.util.Arrays;
 

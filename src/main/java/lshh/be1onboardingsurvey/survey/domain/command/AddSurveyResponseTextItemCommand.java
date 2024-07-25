@@ -1,6 +1,6 @@
 package lshh.be1onboardingsurvey.survey.domain.command;
 
-public record AddSurveyResponseTextItemCommand(
+public record AddSurveyResponseTextItemCommand (
         Long surveyId,
         Long responseId,
         Long itemId,

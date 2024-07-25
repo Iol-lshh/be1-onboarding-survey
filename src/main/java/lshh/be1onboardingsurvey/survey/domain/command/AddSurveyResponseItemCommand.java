@@ -1,7 +1,7 @@
 package lshh.be1onboardingsurvey.survey.domain.command;
 
-import lshh.be1onboardingsurvey.survey.domain.SurveyItemFormType;
-import lshh.be1onboardingsurvey.survey.domain.SurveyResponseItem;
+import lshh.be1onboardingsurvey.survey.domain.entity.SurveyItemFormType;
+import lshh.be1onboardingsurvey.survey.domain.entity.SurveyResponseItem;
 import lshh.be1onboardingsurvey.survey.domain.vo.SurveyResponseItemValue;
 
 public record AddSurveyResponseItemCommand (

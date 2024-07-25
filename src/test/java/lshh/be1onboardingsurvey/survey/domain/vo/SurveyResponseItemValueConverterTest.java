@@ -1,6 +1,6 @@
 package lshh.be1onboardingsurvey.survey.domain.vo;
 
-import lshh.be1onboardingsurvey.survey.domain.SurveyItemFormType;
+import lshh.be1onboardingsurvey.survey.domain.entity.SurveyItemFormType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
